@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:15-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: db_literalura
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - data:/var/lib/postgresql/data
+
+volumes:
+  data:
