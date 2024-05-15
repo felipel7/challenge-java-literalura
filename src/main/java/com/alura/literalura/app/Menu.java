@@ -109,4 +109,17 @@ public class Menu {
 
         return year;
     }
+
+    public String requestLanguageInput() {
+        System.out.println("""
+                Insira o idioma para realizar a busca:
+                es- espanhol
+                en- inglês
+                fr- francês
+                pt- português
+                """);
+        var language = scanner.nextLine();
+
+        return language;
+    }
 }

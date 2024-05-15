@@ -48,7 +48,7 @@ public class BookApp {
                     searchAuthorsByYear();
                     break;
                 case 5:
-                    System.out.println(5);
+                    searchBookByLanguage();
                     break;
                 default:
                     menu.invalidInput();
@@ -65,7 +65,7 @@ public class BookApp {
         var json = apiClient.getData(url);
         var data = convertData.parseJsonToObject(json, ApiResponseDto.class);
 
-        if(data.results().isEmpty()) {
+        if (data.results().isEmpty()) {
             menu.bookNotFound();
             return;
         }
@@ -91,6 +91,16 @@ public class BookApp {
         var year = menu.requestYearInput();
         var authors = authorRepository.findAuthorsByYearOfExistence(year);
         authors.forEach(menu::printAuthors);
+    }
+
+    private void searchBookByLanguage() {
+        var language = menu.requestLanguageInput();
+        var books = bookRepository.findByLanguageIgnoreCase(language);
+        if (books.isEmpty()) {
+            menu.bookNotFound();
+        } else {
+            books.forEach(menu::printBook);
+        }
     }
 
     private Book createRelationshipAndSave(BookDto bookDto, AuthorDto authorDto) {
