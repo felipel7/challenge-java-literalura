@@ -1,7 +1,6 @@
 package com.alura.literalura.app;
 
-import com.alura.literalura.dto.AuthorDto;
-import com.alura.literalura.dto.BookDto;
+import com.alura.literalura.model.Book;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -53,7 +52,7 @@ public class Menu {
         System.out.println("Por favor, insira uma opção válida");
     }
 
-    public void printBook(BookDto book, AuthorDto author) {
+    public void printBook(Book book) {
               System.out.printf("""
                 \n
                 ----- LIVRO -----
@@ -63,9 +62,13 @@ public class Menu {
                  Número de downloads: %d
                 -----------------
                 """,
-                      book.title(),
-                      author.name(),
-                      book.languages().get(0),
-                      book.download_count());
+                      book.getTitle(),
+                      book.getAuthor().getName(),
+                      book.getLanguage(),
+                      book.getDownloadCount());
+    }
+
+    public void bookNotFound() {
+        System.out.println("Nenhum livro encontrado");
     }
 }

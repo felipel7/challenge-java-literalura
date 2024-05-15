@@ -39,7 +39,7 @@ public class BookApp {
                     searchBookByTitle();
                     break;
                 case 2:
-                    System.out.println(2);
+                    listAllBooks();
                     break;
                 case 3:
                     System.out.println(3);
@@ -66,31 +66,31 @@ public class BookApp {
         var data = convertData.parseJsonToObject(json, ApiResponseDto.class);
 
         if(data.results().isEmpty()) {
-            System.out.println("Nenhum livro encontrado");
+            menu.bookNotFound();
             return;
         }
 
-        var book = data.results().get(0);
-        var author = book.authors().get(0);
-        saveBookIfNotExist(book);
-        saveAuthorIfNotExist(author);
+        var bookDto = data.results().get(0);
+        var authorDto = bookDto.authors().get(0);
+        var book = createRelationshipAndSave(bookDto, authorDto);
 
-        menu.printBook(book, author);
+        menu.printBook(book);
     }
 
-    private void saveBookIfNotExist(BookDto bookDto) {
-        var existingBook = bookRepository.findByTitleIgnoreCase(bookDto.title());
-        if (existingBook.isEmpty()) {
-            Book book = new Book(bookDto);
-            bookRepository.save(book);
-        }
+    private void listAllBooks() {
+        var books = bookRepository.findAll();
+        books.forEach(menu::printBook);
     }
 
-    private void saveAuthorIfNotExist(AuthorDto authorDto) {
-        var existingAuthor = authorRepository.findByNameIgnoreCase(authorDto.name());
-        if (existingAuthor.isEmpty()) {
-            Author author = new Author(authorDto);
-            authorRepository.save(author);
-        }
+    private Book createRelationshipAndSave(BookDto bookDto, AuthorDto authorDto) {
+        Book book = new Book(bookDto);
+        Author author = new Author(authorDto);
+
+        book.setAuthor(author);
+        author.getBooks().add(book);
+
+        authorRepository.save(author);
+        bookRepository.save(book);
+        return book;
     }
 }
