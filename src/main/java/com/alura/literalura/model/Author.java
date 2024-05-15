@@ -3,8 +3,8 @@ package com.alura.literalura.model;
 import com.alura.literalura.dto.AuthorDto;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Author {
@@ -20,16 +20,8 @@ public class Author {
 
     private Integer deathYear;
 
-    @ManyToMany
-    private Set<Book> books = new HashSet<>();
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Book> books = new ArrayList<>();
 
     public Author() {
     }
@@ -38,6 +30,14 @@ public class Author {
         this.name = author.name();
         this.birthYear = author.birth_year();
         this.deathYear = author.death_year();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Integer getBirthYear() {
@@ -56,11 +56,18 @@ public class Author {
         this.deathYear = deathYear;
     }
 
-    public Set<Book> getBooks() {
+    public List<Book> getBooks() {
         return books;
     }
 
-    public void setBooks(Set<Book> books) {
+    public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    @Override
+    public String toString() {
+        return "name='" + name + '\'' +
+                ", birthYear=" + birthYear +
+                ", deathYear=" + deathYear;
     }
 }

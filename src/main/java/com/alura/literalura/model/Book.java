@@ -14,11 +14,10 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
     private String title;
 
-    @ManyToMany(mappedBy = "books")
-    private Set<Author> authors;
+    @ManyToOne
+    private Author author;
 
     private String language;
 
@@ -42,12 +41,12 @@ public class Book {
         this.title = title;
     }
 
-    public Set<Author> getAuthors() {
-        return authors;
+    public Author getAuthor() {
+        return author;
     }
 
-    public void setAuthors(Set<Author> authors) {
-        this.authors = authors;
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 
     public String getLanguage() {
@@ -64,5 +63,13 @@ public class Book {
 
     public void setDownloadCount(Integer downloadCount) {
         this.downloadCount = downloadCount;
+    }
+
+    @Override
+    public String toString() {
+        return "title='" + title + '\'' +
+                ", author=" + author +
+                ", language='" + language + '\'' +
+                ", downloadCount=" + downloadCount;
     }
 }
