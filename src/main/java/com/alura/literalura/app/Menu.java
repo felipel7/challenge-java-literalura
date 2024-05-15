@@ -1,8 +1,11 @@
 package com.alura.literalura.app;
 
+import com.alura.literalura.model.Author;
 import com.alura.literalura.model.Book;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
@@ -53,22 +56,57 @@ public class Menu {
     }
 
     public void printBook(Book book) {
-              System.out.printf("""
-                \n
-                ----- LIVRO -----
-                 Título: %s
-                 Autor: %s
-                 Idioma: %s
-                 Número de downloads: %d
-                -----------------
-                """,
-                      book.getTitle(),
-                      book.getAuthor().getName(),
-                      book.getLanguage(),
-                      book.getDownloadCount());
+        System.out.printf("""
+                        \n
+                        ----- LIVRO -----
+                         Título: %s
+                         Autor: %s
+                         Idioma: %s
+                         Número de downloads: %d
+                        -----------------
+                        """,
+                book.getTitle(),
+                book.getAuthor().getName(),
+                book.getLanguage(),
+                book.getDownloadCount());
+    }
+
+    public void printAuthors(Author author) {
+        List<Book> books = author.getBooks();
+        List<String> bookTitles = new ArrayList<>();
+        for (Book book : books)
+            bookTitles.add(book.getTitle());
+
+
+        System.out.printf("""
+                        \n
+                        ----- AUTOR -----
+                         Nome: %s
+                         Ano de nascimento: %s
+                         Ano de falecimento: %s
+                         Livros: %s
+                        -----------------
+                        """,
+                author.getName(),
+                author.getBirthYear(),
+                author.getDeathYear(),
+                bookTitles);
     }
 
     public void bookNotFound() {
         System.out.println("Nenhum livro encontrado");
+    }
+
+
+    public void requestBookName() {
+        System.out.println("Insira o nome do livro que deseja procurar: ");
+    }
+
+    public Integer requestYearInput() {
+        System.out.println("Insira o ano que deseja pesquisar: ");
+        var year = scanner.nextInt();
+        scanner.nextLine();
+
+        return year;
     }
 }

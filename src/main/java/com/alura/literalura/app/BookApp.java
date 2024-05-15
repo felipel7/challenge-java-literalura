@@ -42,10 +42,10 @@ public class BookApp {
                     listAllBooks();
                     break;
                 case 3:
-                    System.out.println(3);
+                    listAllAuthors();
                     break;
                 case 4:
-                    System.out.println(4);
+                    searchAuthorsByYear();
                     break;
                 case 5:
                     System.out.println(5);
@@ -58,7 +58,7 @@ public class BookApp {
     }
 
     private void searchBookByTitle() {
-        System.out.println("Insira o nome do livro que deseja procurar: ");
+        menu.requestBookName();
 
         var title = scanner.nextLine().replace(" ", "%20");
         var url = "https://gutendex.com/books" + "?search=" + title;
@@ -82,15 +82,42 @@ public class BookApp {
         books.forEach(menu::printBook);
     }
 
+    private void listAllAuthors() {
+        var authors = authorRepository.findAll();
+        authors.forEach(menu::printAuthors);
+    }
+
+    private void searchAuthorsByYear() {
+        var year = menu.requestYearInput();
+        var authors = authorRepository.findAuthorsByYearOfExistence(year);
+        authors.forEach(menu::printAuthors);
+    }
+
     private Book createRelationshipAndSave(BookDto bookDto, AuthorDto authorDto) {
+        var existingAuthor = authorRepository.findByNameIgnoreCase(authorDto.name());
         Book book = new Book(bookDto);
-        Author author = new Author(authorDto);
 
-        book.setAuthor(author);
-        author.getBooks().add(book);
+        if (existingAuthor.isEmpty()) {
+            Author author = new Author(authorDto);
 
-        authorRepository.save(author);
-        bookRepository.save(book);
+            book.setAuthor(author);
+            author.getBooks().add(book);
+
+            authorRepository.save(author);
+            bookRepository.save(book);
+        } else {
+            var author = existingAuthor.get();
+            var bookExists = author.getBooks()
+                    .stream()
+                    .anyMatch(b -> b.getTitle().equalsIgnoreCase(book.getTitle()));
+
+            if (!bookExists) {
+                book.setAuthor(author);
+                author.getBooks().add(book);
+                bookRepository.save(book);
+            }
+        }
+
         return book;
     }
 }
